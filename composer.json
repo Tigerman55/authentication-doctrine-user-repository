@@ -21,7 +21,7 @@
     }
   },
   "extra": {
-    "zf" : {
+    "laminas" : {
       "config-provider": "Tigerman55\\AuthenticationDoctrineUserRepository\\ConfigProvider"
     }
   },
