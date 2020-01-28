@@ -7,6 +7,7 @@ namespace Tigerman55\AuthenticationDoctrineUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
+use Tigerman55\AuthenticationDoctrineUserRepository\UserInterface as EntityUserInterface;
 
 use function array_map;
 use function password_verify;
@@ -37,49 +38,30 @@ class DoctrineUserRepository implements UserRepositoryInterface
 
     public function authenticate(string $credential, ?string $password = null): ?UserInterface
     {
-        $users = $this->em->createQueryBuilder()->select('u')
+        $users = $this->em->createQueryBuilder()->select('u, r')
             ->from($this->config['entity']['user'], 'u')
+            ->innerJoin('u.roles', 'r')
             ->where('u.' . $this->config['field']['identity'] . ' = :identity')
             ->setParameter('identity', $credential)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
         if ($users === []) {
             return null;
         }
 
+        /** @var EntityUserInterface $user */
         $user = $users[0];
-        if (password_verify($password ?? '', $user[$this->config['field']['password']] ?? '')) {
+        if (password_verify($password ?? '', $user->getPasswordHash() ?? '')) {
             return ($this->userFactory)(
                 $credential,
-                $this->getUserRoles(),
-                $this->getUserDetails($user)
+                array_map(function (RoleInterface $role): string {
+                    return $role->getName();
+                }, $user->getRoles()),
+                $user->getDetails()
             );
         }
 
         return null;
-    }
-
-    private function getUserRoles(): array
-    {
-        $roles = $this->em->createQueryBuilder()
-            ->select('r')
-            ->from($this->config['entity']['role'], 'r')
-            ->getQuery()
-            ->getArrayResult();
-
-        return array_map(function (array $roles) {
-            return $roles[$this->config['field']['role']];
-        }, $roles);
-    }
-
-    private function getUserDetails(array $user): array
-    {
-        $details = [];
-        foreach ($this->config['user']['details'] as $detail) {
-            $details[$detail] = $user[$detail];
-        }
-
-        return $details;
     }
 }
