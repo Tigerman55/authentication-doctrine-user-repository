@@ -1,4 +1,5 @@
-#Authentication Doctrine User Repository
+# Authentication Doctrine User Repository
+
 This is an authentication user repository intended for use with [mezzio-authentication](https://github.com/mezzio/mezzio-authentication). If you are using doctrine with your mezzio application, this will prevent you from writing redundant SQL queries or opening a new database connection. Instead, we directly fetch arrays with the entity manager.
 
 ## Installation
