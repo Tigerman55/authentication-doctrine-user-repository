@@ -57,7 +57,7 @@ class DoctrineUserRepository implements UserRepositoryInterface
                 $credential,
                 array_map(function (RoleInterface $role): string {
                     return $role->getName();
-                }, $user->getRoles()),
+                }, $user->getRoles()->toArray()),
                 $user->getDetails()
             );
         }
