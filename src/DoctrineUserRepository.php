@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tigerman55\DoctrineUserRepository;
+namespace Tigerman55\AuthenticationDoctrineUserRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mezzio\Authentication\UserInterface;
