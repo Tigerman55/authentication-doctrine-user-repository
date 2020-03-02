@@ -6,7 +6,7 @@
     "name": "Joseph Koch"
   }],
   "require": {
-    "php": "^7.4",
+    "php": "^7.3",
     "mezzio/mezzio-authentication": "^1.1",
     "doctrine/orm": "^2.7"
   },
